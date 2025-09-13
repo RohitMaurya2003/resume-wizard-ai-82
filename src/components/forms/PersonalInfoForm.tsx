@@ -97,20 +97,28 @@ export const PersonalInfoForm = ({ data, onUpdate }: PersonalInfoFormProps) => {
             className="transition-smooth focus:shadow-elegant"
           />
         </div>
-      </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="summary">Professional Summary</Label>
-        <Textarea
-          id="summary"
-          value={formData.summary}
-          onChange={(e) => handleChange('summary', e.target.value)}
-          placeholder="Write a brief summary of your professional experience and career goals..."
-          className="min-h-24 transition-smooth focus:shadow-elegant"
-        />
-        <p className="text-sm text-muted-foreground">
-          A compelling summary that highlights your key skills and experience.
-        </p>
+
+        <div className="space-y-2">
+          <Label htmlFor="github">GitHub Profile</Label>
+          <Input
+            id="github"
+            value={formData.github || ''}
+            onChange={(e) => handleChange('github', e.target.value)}
+            placeholder="github.com/johndoe"
+            className="transition-smooth focus:shadow-elegant"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="website">Personal Website</Label>
+          <Input
+            id="website"
+            value={formData.website || ''}
+            onChange={(e) => handleChange('website', e.target.value)}
+            placeholder="www.johndoe.com"
+            className="transition-smooth focus:shadow-elegant"
+          />
+        </div>
       </div>
     </div>
   );

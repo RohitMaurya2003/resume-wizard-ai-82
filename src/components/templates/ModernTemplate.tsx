@@ -61,12 +61,12 @@ export const ModernTemplate = ({ data }: ModernTemplateProps) => {
 
       <div className="px-8 py-8">
         {/* Professional Summary */}
-        {personalInfo.summary && (
+        {data.professionalSummary.content && (
           <section className="mb-8">
             <h2 className="text-2xl font-bold text-gray-800 mb-4 border-b-2 border-blue-600 pb-2">
               Professional Summary
             </h2>
-            <p className="text-gray-600 leading-relaxed">{personalInfo.summary}</p>
+            <p className="text-gray-600 leading-relaxed">{data.professionalSummary.content}</p>
           </section>
         )}
 

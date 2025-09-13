@@ -2,27 +2,36 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Download, Sparkles, User, Briefcase, GraduationCap, Code, FolderOpen } from 'lucide-react';
+import { Download, Sparkles, User, Briefcase, GraduationCap, Code, FolderOpen, FileText, Award, Trophy, Languages, BookOpen, Heart, Users } from 'lucide-react';
 import { PersonalInfoForm } from './forms/PersonalInfoForm';
+import { ProfessionalSummaryForm } from './forms/ProfessionalSummaryForm';
 import { ExperienceForm } from './forms/ExperienceForm';
 import { EducationForm } from './forms/EducationForm';
 import { SkillsForm } from './forms/SkillsForm';
+import { TechnologiesForm } from './forms/TechnologiesForm';
 import { ProjectsForm } from './forms/ProjectsForm';
+import { CertificationsForm } from './forms/CertificationsForm';
+import { AchievementsForm } from './forms/AchievementsForm';
+import { LanguagesForm } from './forms/LanguagesForm';
+import { PublicationsForm } from './forms/PublicationsForm';
 import { ResumePreview } from './ResumePreview';
 import { AIOptimizer } from './AIOptimizer';
 import { useResumeData } from '@/hooks/useResumeData';
 import { exportToPDF } from '@/utils/pdfExport';
 import { useToast } from '@/components/ui/use-toast';
+import { ResumeTemplate } from '@/types/resume';
 
 export const ResumeBuilder = () => {
   const { toast } = useToast();
-  const { resumeData, updatePersonalInfo, addExperience, updateExperience, deleteExperience, 
-          addEducation, updateEducation, deleteEducation, addSkill, updateSkill, deleteSkill,
-          addProject, updateProject, deleteProject } = useResumeData();
+  const { resumeData, updatePersonalInfo, updateProfessionalSummary, addExperience, updateExperience, deleteExperience, 
+          addEducation, updateEducation, deleteEducation, addSkill, updateSkill, deleteSkill, addTechnology, updateTechnology, deleteTechnology,
+          addProject, updateProject, deleteProject, addCertification, updateCertification, deleteCertification,
+          addAchievement, updateAchievement, deleteAchievement, addLanguage, updateLanguage, deleteLanguage,
+          addPublication, updatePublication, deletePublication } = useResumeData();
   
   const [activeTab, setActiveTab] = useState('personal');
   const [showAIOptimizer, setShowAIOptimizer] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<'modern' | 'minimal' | 'creative' | 'professional'>('modern');
+  const [selectedTemplate, setSelectedTemplate] = useState<ResumeTemplate>('modern');
 
   const handleExportPDF = async () => {
     try {
@@ -81,26 +90,30 @@ export const ResumeBuilder = () => {
           <div className="space-y-6">
             <Card className="shadow-card border-border/50">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-5 bg-muted/50">
-                  <TabsTrigger value="personal" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground">
-                    <User className="w-4 h-4 mr-2" />
+                <TabsList className="grid w-full grid-cols-6 bg-muted/50 mb-6">
+                  <TabsTrigger value="personal" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground text-xs">
+                    <User className="w-3 h-3 mr-1" />
                     Personal
                   </TabsTrigger>
-                  <TabsTrigger value="experience" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground">
-                    <Briefcase className="w-4 h-4 mr-2" />
+                  <TabsTrigger value="summary" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground text-xs">
+                    <FileText className="w-3 h-3 mr-1" />
+                    Summary
+                  </TabsTrigger>
+                  <TabsTrigger value="experience" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground text-xs">
+                    <Briefcase className="w-3 h-3 mr-1" />
                     Experience
                   </TabsTrigger>
-                  <TabsTrigger value="education" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground">
-                    <GraduationCap className="w-4 h-4 mr-2" />
+                  <TabsTrigger value="education" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground text-xs">
+                    <GraduationCap className="w-3 h-3 mr-1" />
                     Education
                   </TabsTrigger>
-                  <TabsTrigger value="skills" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground">
-                    <Code className="w-4 h-4 mr-2" />
+                  <TabsTrigger value="skills" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground text-xs">
+                    <Code className="w-3 h-3 mr-1" />
                     Skills
                   </TabsTrigger>
-                  <TabsTrigger value="projects" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground">
-                    <FolderOpen className="w-4 h-4 mr-2" />
-                    Projects
+                  <TabsTrigger value="more" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground text-xs">
+                    <Trophy className="w-3 h-3 mr-1" />
+                    More
                   </TabsTrigger>
                 </TabsList>
 
@@ -109,6 +122,13 @@ export const ResumeBuilder = () => {
                     <PersonalInfoForm 
                       data={resumeData.personalInfo} 
                       onUpdate={updatePersonalInfo}
+                    />
+                  </TabsContent>
+
+                  <TabsContent value="summary" className="mt-0">
+                    <ProfessionalSummaryForm 
+                      data={resumeData.professionalSummary} 
+                      onUpdate={updateProfessionalSummary}
                     />
                   </TabsContent>
                   
@@ -131,21 +151,55 @@ export const ResumeBuilder = () => {
                   </TabsContent>
                   
                   <TabsContent value="skills" className="mt-0">
-                    <SkillsForm 
-                      skills={resumeData.skills}
-                      onAdd={addSkill}
-                      onUpdate={updateSkill}
-                      onDelete={deleteSkill}
-                    />
+                    <div className="space-y-8">
+                      <SkillsForm 
+                        skills={resumeData.skills}
+                        onAdd={addSkill}
+                        onUpdate={updateSkill}
+                        onDelete={deleteSkill}
+                      />
+                      <TechnologiesForm 
+                        technologies={resumeData.technologies}
+                        onAdd={addTechnology}
+                        onUpdate={updateTechnology}
+                        onDelete={deleteTechnology}
+                      />
+                      <ProjectsForm 
+                        projects={resumeData.projects}
+                        onAdd={addProject}
+                        onUpdate={updateProject}
+                        onDelete={deleteProject}
+                      />
+                    </div>
                   </TabsContent>
-                  
-                  <TabsContent value="projects" className="mt-0">
-                    <ProjectsForm 
-                      projects={resumeData.projects}
-                      onAdd={addProject}
-                      onUpdate={updateProject}
-                      onDelete={deleteProject}
-                    />
+
+                  <TabsContent value="more" className="mt-0">
+                    <div className="space-y-8">
+                      <CertificationsForm 
+                        certifications={resumeData.certifications}
+                        onAdd={addCertification}
+                        onUpdate={updateCertification}
+                        onDelete={deleteCertification}
+                      />
+                      <AchievementsForm 
+                        achievements={resumeData.achievements}
+                        onAdd={addAchievement}
+                        onUpdate={updateAchievement}
+                        onDelete={deleteAchievement}
+                      />
+                      <LanguagesForm 
+                        languages={resumeData.languages}
+                        onAdd={addLanguage}
+                        onUpdate={updateLanguage}
+                        onDelete={deleteLanguage}
+                      />
+                      <PublicationsForm 
+                        publications={resumeData.publications}
+                        onAdd={addPublication}
+                        onUpdate={updatePublication}
+                        onDelete={deletePublication}
+                      />
+                    </div>
                   </TabsContent>
                 </div>
               </Tabs>
@@ -170,8 +224,12 @@ export const ResumeBuilder = () => {
           onClose={() => setShowAIOptimizer(false)}
           onOptimize={(optimizedData) => {
             // Apply AI optimizations to resume data
-            if (optimizedData.summary) {
-              updatePersonalInfo({ ...resumeData.personalInfo, summary: optimizedData.summary });
+            if (optimizedData.professionalSummary) {
+              updateProfessionalSummary({ 
+                ...resumeData.professionalSummary, 
+                content: optimizedData.professionalSummary,
+                keywords: optimizedData.keywords || []
+              });
             }
             setShowAIOptimizer(false);
             toast({

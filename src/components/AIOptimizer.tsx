@@ -38,9 +38,11 @@ export const AIOptimizer = ({ resumeData, onClose, onOptimize }: AIOptimizerProp
       
       // Mock AI optimization results
       const mockOptimization: AIOptimization['optimizedContent'] = {
-        summary: generateOptimizedSummary(resumeData, jobDescription),
+        professionalSummary: generateOptimizedSummary(resumeData, jobDescription),
         skills: generateOptimizedSkills(resumeData, jobDescription),
+        technologies: generateOptimizedTechnologies(resumeData, jobDescription),
         bulletPoints: generateOptimizedBulletPoints(resumeData, jobDescription),
+        keywords: extractKeywords(jobDescription),
       };
       
       setOptimizationResult(mockOptimization);
@@ -130,14 +132,33 @@ export const AIOptimizer = ({ resumeData, onClose, onOptimize }: AIOptimizerProp
               </div>
 
               {/* Optimized Summary */}
-              {optimizationResult.summary && (
+              {optimizationResult.professionalSummary && (
                 <Card className="shadow-card border-green-200">
                   <CardContent className="p-4">
                     <h4 className="font-medium mb-2 text-green-800">Optimized Professional Summary</h4>
                     <p className="text-sm text-muted-foreground mb-2">Original:</p>
-                    <p className="text-sm bg-gray-100 p-2 rounded mb-2">{resumeData.personalInfo.summary || 'No summary provided'}</p>
+                    <p className="text-sm bg-gray-100 p-2 rounded mb-2">{resumeData.professionalSummary.content || 'No summary provided'}</p>
                     <p className="text-sm text-muted-foreground mb-2">Optimized:</p>
-                    <p className="text-sm bg-green-50 p-2 rounded border border-green-200">{optimizationResult.summary}</p>
+                    <p className="text-sm bg-green-50 p-2 rounded border border-green-200">{optimizationResult.professionalSummary}</p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Optimized Technologies */}
+              {optimizationResult.technologies && optimizationResult.technologies.length > 0 && (
+                <Card className="shadow-card border-indigo-200">
+                  <CardContent className="p-4">
+                    <h4 className="font-medium mb-2 text-indigo-800">Recommended Technologies to Add</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {optimizationResult.technologies.map((tech, index) => (
+                        <span
+                          key={index}
+                          className="px-2 py-1 bg-indigo-50 text-indigo-800 text-xs rounded border border-indigo-200"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
                   </CardContent>
                 </Card>
               )}
@@ -205,7 +226,7 @@ export const AIOptimizer = ({ resumeData, onClose, onOptimize }: AIOptimizerProp
 // Mock AI optimization functions
 function generateOptimizedSummary(resumeData: ResumeData, jobDescription: string): string {
   const keywords = extractKeywords(jobDescription);
-  const currentSummary = resumeData.personalInfo.summary || '';
+  const currentSummary = resumeData.professionalSummary.content || '';
   
   return `Results-driven professional with proven expertise in ${keywords.slice(0, 3).join(', ')}, bringing ${resumeData.experience.length}+ years of experience in delivering innovative solutions. Demonstrated success in ${keywords.slice(3, 5).join(' and ')}, with a strong track record of achieving measurable results and driving business growth through strategic initiatives and collaborative leadership.`;
 }
@@ -215,6 +236,13 @@ function generateOptimizedSkills(resumeData: ResumeData, jobDescription: string)
   const existingSkills = resumeData.skills.map(s => s.name.toLowerCase());
   
   return keywords.filter(keyword => !existingSkills.includes(keyword.toLowerCase())).slice(0, 5);
+}
+
+function generateOptimizedTechnologies(resumeData: ResumeData, jobDescription: string): string[] {
+  const keywords = extractKeywords(jobDescription);
+  const existingTechnologies = resumeData.technologies.map(t => t.name.toLowerCase());
+  
+  return keywords.filter(keyword => !existingTechnologies.includes(keyword.toLowerCase())).slice(0, 5);
 }
 
 function generateOptimizedBulletPoints(resumeData: ResumeData, jobDescription: string): Record<string, string[]> {

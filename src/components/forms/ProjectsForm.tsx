@@ -26,6 +26,7 @@ export const ProjectsForm = ({ projects, onAdd, onUpdate, onDelete }: ProjectsFo
     github: '',
     startDate: '',
     endDate: '',
+    highlights: [],
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -49,6 +50,7 @@ export const ProjectsForm = ({ projects, onAdd, onUpdate, onDelete }: ProjectsFo
       github: '',
       startDate: '',
       endDate: '',
+      highlights: [],
     });
   };
 
